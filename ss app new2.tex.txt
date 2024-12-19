@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SS Mobile App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            animation: fadeIn 1s ease-in-out;
+            position: relative; /* Ensure positioning context for the back button */
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 1.6em;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: slideIn 1s forwards;
+            text-decoration: none;
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            opacity: 0;
+            animation: fadeInUp 1s forwards;
+        }
+
+        input {
+            animation-delay: 0.5s;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            animation-delay: 1s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .second-screen, .movie-screen, .car-screen {
+            display: none;
+        }
+
+        .results {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .movie-result, .car-result {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+
+        /* Underline for specific heading */
+        .underlined {
+            text-decoration: underline;
+        }
+
+        /* Adjust font size for the list to make it smaller */
+        ul {
+            font-size: 1em; /* Smaller font size */
+            text-align: left;
+            margin-left: 20px;
+            line-height: 1.6; /* Adjust line spacing for better readability */
+        }
+
+        ul li {
+            margin-bottom: 8px; /* Reduced spacing between list items */
+        }
+
+        /* Back Button Styling */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .back-button:hover {
+            background-color: #ff1a1a;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            0% {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Back Button -->
+    <button class="back-button" onclick="goBack()">Back</button>
+
+    <!-- First Screen -->
+    <div class="container" id="firstScreen">
+        <h1>Welcome to SS Mobile App</h1>
+        <button onclick="showSecondScreen()">Click Me!</button>
+    </div>
+
+    <!-- Second Screen (where user searches for movies) -->
+    <div class="container second-screen" id="secondScreen">
+        <h1>Hi, what are you looking for?</h1>
+        <input type="text" id="searchInput" placeholder="Search for...">
+        <button onclick="searchContent()">Search</button>
+        
+        <!-- Display search results here -->
+        <div id="searchResults" class="results" style="display:none;">
+            <!-- Results will be shown here dynamically -->
+        </div>
+    </div>
+
+    <!-- Movie Screen (after searching for movies) -->
+    <div class="container movie-screen" id="movieScreen">
+        <h1 class="underlined">Here are the websites and apps you can watch movies</h1>
+        
+        <div id="movieResults" class="results">
+            <ul>
+                <li>1. Netflix</li>
+                <li>2. HDToday</li>
+                <li>3. YTS</li>
+                <li>4. Plex</li>
+                <li>5. Cinesub</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Car Information Screen -->
+    <div class="container car-screen" id="carScreen">
+        <h1 class="underlined">Here are some popular cars</h1>
+        
+        <div id="carResults" class="results">
+            <ul>
+                <li><strong>1. Tesla Model S</strong><br>A fully electric luxury sedan with high performance, long range, and cutting-edge technology.</li>
+                <li><strong>2. Ford Mustang</strong><br>A classic American muscle car known for its power, speed, and iconic design.</li>
+                <li><strong>3. BMW 3 Series</strong><br>A compact luxury sedan with a refined interior, sporty handling, and advanced safety features.</li>
+                <li><strong>4. Audi A4</strong><br>A compact executive car offering a combination of luxury, performance, and cutting-edge technology.</li>
+                <li><strong>5. Toyota Prius</strong><br>A hybrid car known for its fuel efficiency, eco-friendliness, and smooth driving experience.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Predefined movie data for demo
+        const movieData = [
+            { title: "Inception", description: "A mind-bending thriller by Christopher Nolan." },
+            { title: "The Matrix", description: "A science fiction film about reality and simulation." },
+            { title: "Titanic", description: "A romantic tragedy set aboard the RMS Titanic." },
+            { title: "Avatar", description: "A visually stunning film set on the alien planet of Pandora." },
+            { title: "The Dark Knight", description: "A Batman film that delves into themes of heroism and chaos." }
+        ];
+
+        // Predefined car data
+        const carData = [
+            { title: "Tesla Model S", description: "A fully electric luxury sedan with high performance, long range, and cutting-edge technology." },
+            { title: "Ford Mustang", description: "A classic American muscle car known for its power, speed, and iconic design." },
+            { title: "BMW 3 Series", description: "A compact luxury sedan with a refined interior, sporty handling, and advanced safety features." },
+            { title: "Audi A4", description: "A compact executive car offering a combination of luxury, performance, and cutting-edge technology." },
+            { title: "Toyota Prius", description: "A hybrid car known for its fuel efficiency, eco-friendliness, and smooth driving experience." }
+        ];
+
+        // Function to show the second screen
+        function showSecondScreen() {
+            document.getElementById("firstScreen").style.display = "none"; // Hide first screen
+            document.getElementById("secondScreen").style.display = "block"; // Show second screen
+        }
+
+        // Function to handle the search based on the user's input
+        function searchContent() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            const resultsContainer = document.getElementById("searchResults");
+
+            if (query) {
+                // Show the results container
+                resultsContainer.style.display = "block";
+                resultsContainer.innerHTML = ''; // Clear previous results
+
+                // Check if the user searched for "movies"
+                if (query === "movies") {
+                    // Hide second screen and show movie screen
+                    document.getElementById("secondScreen").style.display = "none";
+                    document.getElementById("movieScreen").style.display = "block";
+                }
+                // Check if the user searched for "cars"
+                else if (query === "cars") {
+                    // Hide second screen and show car screen
+                    document.getElementById("secondScreen").style.display = "none";
+                    document.getElementById("carScreen").style.display = "block";
+                } else {
+                    resultsContainer.innerHTML = "No results found for your query.";
+                }
+            } else {
+                alert("Please enter something to search.");
+            }
+        }
+
+        // Function to go back to the previous screen
+        function goBack() {
+            // Show the first screen and hide other screens
+            document.getElementById("secondScreen").style.display = "none";
+            document.getElementById("movieScreen").style.display = "none";
+            document.getElementById("carScreen").style.display = "none";
+            document.getElementById("firstScreen").style.display = "block";
+        }
+    </script>
+
+</body>
+</html>
